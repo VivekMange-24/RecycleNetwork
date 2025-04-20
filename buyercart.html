@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <script src="cart.js" defer></script>
+</head>
+<style>
+    /* General Styles */
+ body {
+     font-family: 'Roboto', sans-serif;
+     background-color: #E8F5E9;
+     margin: 0;
+     padding: 0;
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     justify-content: center;
+     min-height: 100vh;
+ }
+ 
+ h1 {
+     text-align: center;
+     margin-top: 20px;
+     font-size: 2.5rem;
+     color: #1B5E20;
+     font-weight: bold;
+ }
+ 
+ /* Cart Container */
+ #cart-container {
+     max-width: 900px;
+     width: 90%;
+     background-color: #ffffff;
+     padding: 25px;
+     border-radius: 12px;
+     box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
+     margin-top: 20px;
+     display: flex;
+     flex-direction: column;
+     gap: 15px;
+ }
+ 
+ /* Cart Items */
+ .cart-item {
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     padding: 15px 10px;
+     border-bottom: 1px solid #A5D6A7;
+     transition: transform 0.2s ease-in-out;
+     background-color: #F1F8E9;
+     border-radius: 8px;
+     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.05);
+     padding: 15px;
+ }
+ 
+ .cart-item:hover {
+     transform: scale(1.02);
+     background-color: #C8E6C9;
+ }
+ 
+ .cart-item div {
+     font-size: 1.2rem;
+     color: #1B5E20;
+     flex: 1;
+     text-align: center;
+     font-weight: 500;
+ }
+ 
+ /* Buttons */
+ button {
+     background-color: #388E3C;
+     color: white;
+     border: none;
+     padding: 10px 18px;
+     border-radius: 8px;
+     cursor: pointer;
+     font-size: 1rem;
+     transition: all 0.3s ease;
+ }
+ 
+ button:hover {
+     background-color: #1B5E20;
+     transform: scale(1.08);
+ }
+ 
+ button:focus {
+     outline: none;
+ }
+ 
+ button:active {
+     background-color: #145A32;
+ }
+ 
+ /* Proceed Button */
+ button.proceed-btn {
+     background-color: #2E7D32;
+     margin: 20px auto;
+     display: block;
+     width: 250px;
+     font-size: 1.2rem;
+     padding: 12px;
+     border-radius: 10px;
+     font-weight: bold;
+     transition: all 0.3s ease;
+ }
+ 
+ button.proceed-btn:hover {
+     background-color: #1B5E20;
+     transform: scale(1.05);
+ }
+ 
+ /* Total Amount */
+ h3 {
+     font-size: 1.7rem;
+     color: #1B5E20;
+     text-align: center;
+     margin-top: 20px;
+     font-weight: bold;
+ }
+ 
+ #total-amount {
+     font-weight: bold;
+     color: #388E3C;
+     font-size: 1.5rem;
+ }
+ 
+ /* Responsive Design */
+ @media (max-width: 768px) {
+     #cart-container {
+         max-width: 95%;
+         padding: 20px;
+     }
+     
+     h1 {
+         font-size: 2.2rem;
+     }
+     
+     .cart-item div {
+         font-size: 1rem;
+     }
+     
+     button.proceed-btn {
+         width: 200px;
+         font-size: 1rem;
+         padding: 10px;
+     }
+ }
+</style>
+<body>
+    <h1>Shopping Cart</h1>
+    <div id="cart-container"></div>
+    <h3>Total: Rs <span id="total-amount">0</span></h3>
+    <center><button onclick="proceedToCheckout()">Proceed to Checkout</button></center>
+
+    <script>
+        async function fetchBuycartItems() {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                alert("Please log in to view your cart.");
+                window.location.href = "homepage.html";
+                return;
+            }
+    
+            try {
+                const response = await fetch('/buycart', {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+    
+                if (!response.ok) throw new Error("Failed to fetch buycart");
+    
+                const buycartData = await response.json();
+                updateBuycartDisplay(buycartData.items);
+            } catch (error) {
+                console.error("Error fetching buycart:", error);
+            }
+        }
+    
+        async function fetchSelectedAddress() {
+            const token = localStorage.getItem("token");
+        
+            if (!token) {
+                console.warn("User is not logged in.");
+                document.getElementById("selected-address").textContent = "Please log in to view your address.";
+                return;
+            }
+        
+            try {
+                const response = await fetch('/selected-address', {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+        
+                if (!response.ok) {
+                    const errorText = await response.text(); // Get detailed error response
+                    throw new Error(`Failed to fetch address: ${errorText}`);
+                }
+        
+                const addressData = await response.json();
+                document.getElementById("selected-address").textContent = addressData.address 
+                    ? addressData.address 
+                    : "No address found. Please add one in your profile.";
+            } catch (error) {
+                console.error("Error fetching selected address:", error);
+                document.getElementById("selected-address").textContent = "Error fetching address. Please try again.";
+            }
+        }
+        
+        document.addEventListener("DOMContentLoaded", () => {
+            fetchSelectedAddress();
+        });
+        
+        function updateBuycartDisplay(buycartItems) {
+            const cartContainer = document.getElementById("cart-container");
+            const totalAmountElem = document.getElementById("total-amount");
+            cartContainer.innerHTML = "";
+            let totalAmount = 0;
+    
+            if (buycartItems.length === 0) {
+                cartContainer.innerHTML = "<p>Your buycart is empty.</p>";
+                totalAmountElem.textContent = "0";
+                return;
+            }
+    
+            buycartItems.forEach(item => {
+                const cartItem = document.createElement("div");
+                cartItem.classList.add("cart-item");
+                cartItem.innerHTML = `
+                    <div>${item.title} - Rs ${item.price} x ${item.quantity}</div>
+                    <div>Total: Rs ${item.price * item.quantity}</div>
+                    <button onclick="removeFromBuycart('${item._id}')">Remove</button>
+                `;
+                cartContainer.appendChild(cartItem);
+                totalAmount += item.price * item.quantity;
+            });
+    
+            totalAmountElem.textContent = totalAmount;
+        }
+    
+        async function removeFromBuycart(itemID) {
+            const token = localStorage.getItem("token");
+            if (!token) return;
+    
+            try {
+                const response = await fetch('/remove-from-buycart', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ itemID })
+                });
+    
+                if (!response.ok) throw new Error("Failed to remove item");
+    
+                const buycart = await response.json();
+                updateBuycartDisplay(buycart.buycart);
+            } catch (error) {
+                console.error("Error removing item from buycart:", error);
+            }
+        }
+    
+        function proceedToCheckout() {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                alert("Please log in to proceed.");
+                return;
+            }
+            window.location.href = "buyercheckout.html";
+        }
+    
+        document.addEventListener("DOMContentLoaded", () => {
+            fetchBuycartItems();
+            fetchSelectedAddress();
+        });
+    </script>
+    
+</body>
+</html>

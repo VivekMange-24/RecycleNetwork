@@ -1,0 +1,327 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Carbon Footprint Calculator</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+     
+      background-size: cover;
+      margin: 0;
+      padding: 0;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+
+    .container {
+      background: #fff; /* Solid background color for the card */
+      border-radius: 15px;
+      padding: 30px;
+      width: 400px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for the card */
+      border: 1px solid #e0e0e0; /* Light border for the card */
+    }
+    
+    h1 {
+      text-align: center;
+      color: #000; /* Set text color to black */
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+    
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    label {
+      font-size: 1rem;
+      color: #000; /* Set text color to black */
+      margin-bottom: 5px;
+    }
+    
+    input[type="text"], input[type="number"] {
+      background: #f9f9f9; /* Light background for input fields */
+      border: 1px solid #ccc; /* Light border for inputs */
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 15px;
+      color: #000; /* Set text color to black */
+      font-size: 1rem;
+      transition: 0.3s ease-in-out;
+    }
+    
+    input[type="text"]:focus, input[type="number"]:focus {
+      background: #fff; /* White background on focus */
+      border-color: #00ff99; /* Green border on focus */
+      outline: none;
+    }
+    
+    input[type="button"] {
+      background: #00ff99;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-top: 10px;
+    }
+    
+    input[type="button"]:hover {
+      background-color: #00cc7a;
+    }
+    
+    ::placeholder {
+      color: rgba(0, 0, 0, 0.6); /* Set placeholder text color to a lighter black */
+      font-style: italic;
+    }
+    
+    #result {
+      margin-top: 20px;
+      color: #000; /* Set result text color to black */
+      font-size: 1.2rem;
+      text-align: center;
+    }
+    
+    .badge-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      color: white;
+      font-size: 24px;
+      display: none;
+    }
+
+    .badge {
+      padding: 20px;
+      border-radius: 10px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .gold {
+      background-color: gold;
+      color: black;
+    }
+
+    .silver {
+      background-color: silver;
+      color: black;
+    }
+
+    .bronze {
+      background-color: #cd7f32;
+    }
+
+    .share-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .share-buttons button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      color: white;
+    }
+
+    .share-facebook {
+      background-color: #3b5998;
+    }
+.share-whatsapp{
+  background-color: green;
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Carbon Footprint Calculator</h1>
+    <form id="footprintForm">
+      <label for="userName">Name:</label>
+      <input type="text" id="userName" name="userName" placeholder="Enter your name">
+      
+      <label for="electricity">Electricity (kWh per month):</label>
+      <input type="number" id="electricity" name="electricity" placeholder="Enter electricity consumption">
+      
+      <label for="carMiles">Car Miles Driven per Month:</label>
+      <input type="number" id="carMiles" name="carMiles" placeholder="Enter car miles">
+      
+      <label for="flights">Flights per Year:</label>
+      <input type="number" id="flights" name="flights" placeholder="Enter number of flights">
+      
+      <label for="recycledWaste">Recycled Waste (kg per month):</label>
+      <input type="number" id="recycledWaste" name="recycledWaste" placeholder="Enter recycled waste">
+      
+      <input type="button" value="Calculate" onclick="calculateFootprint()">
+    </form>
+    <p id="result"></p>
+  </div>
+  
+
+<div id="badgeOverlay" class="badge-overlay" onclick="closeOverlay()">
+  <div id="badge" class="badge">
+    <button id="closeBtn" class="close-btn" onclick="closeOverlay(event)">X</button>
+  </div>
+  <div class="share-buttons">
+    <button class="share-facebook" onclick="shareOnFacebook()">Share on Facebook</button>
+    <button class="share-whatsapp" onclick="shareOnWhatsApp()">Share on WhatsApp</button>
+  </div>
+</div>
+
+
+  <script>
+    function calculateFootprint() {
+      const userName = document.getElementById('userName').value.trim();
+      const electricity = document.getElementById('electricity').value.trim();
+      const carMiles = document.getElementById('carMiles').value.trim();
+      const flights = document.getElementById('flights').value.trim();
+      const recycledWaste = document.getElementById('recycledWaste').value.trim();
+  
+      // Check if any field is empty
+      if (!userName || !electricity || !carMiles || !flights || !recycledWaste) {
+        alert("All fields are required. Please fill in all details.");
+        return;
+      }
+  
+      // Convert inputs to numbers and validate if they are valid positive numbers
+      const electricityNum = parseFloat(electricity);
+      const carMilesNum = parseFloat(carMiles);
+      const flightsNum = parseInt(flights);
+      const recycledWasteNum = parseFloat(recycledWaste);
+  
+      if (
+        isNaN(electricityNum) || electricityNum < 0 ||
+        isNaN(carMilesNum) || carMilesNum < 0 ||
+        isNaN(flightsNum) || flightsNum < 0 ||
+        isNaN(recycledWasteNum) || recycledWasteNum < 0
+      ) {
+        alert("Please enter valid positive numbers for all fields.");
+        return;
+      }
+
+      // Emission factors (these are examples and may vary based on sources)
+      const electricityFactor = 0.5; // kg CO2 per kWh
+      const carFactor = 0.4; // kg CO2 per mile
+      const flightFactor = 250; // kg CO2 per flight
+      const wasteReductionFactor = 2; // kg CO2 saved per kg of waste recycled
+
+      const electricityEmissions = electricity * electricityFactor;
+      const carEmissions = carMiles * carFactor;
+      const flightEmissions = flights * flightFactor;
+      const wasteEmissionsReduction = recycledWaste * wasteReductionFactor;
+
+      const totalEmissions = (electricityEmissions + carEmissions + flightEmissions) - wasteEmissionsReduction;
+
+      let footprintCategory;
+      let badgeClass;
+      if (totalEmissions <= 500) {
+        footprintCategory = "Gold (Very Good)";
+        badgeClass = "gold";
+      } else if (totalEmissions <= 1000) {
+        footprintCategory = "Silver (Satisfactory)";
+        badgeClass = "silver";
+      } else {
+        footprintCategory = "Bronze (Needs Improvement)";
+        badgeClass = "bronze";
+      }
+
+      document.getElementById('result').innerText = `Your total carbon footprint is ${totalEmissions.toFixed(2)} kg CO2 per month. Category: ${footprintCategory}.`;
+
+      const badge = document.getElementById('badge');
+      badge.innerHTML = `<strong>${userName}</strong>, your category is ${footprintCategory}`;
+      badge.className = `badge ${badgeClass}`;
+
+      const badgeOverlay = document.getElementById('badgeOverlay');
+      badgeOverlay.style.display = 'flex';
+    }
+
+    function shareOnFacebook() {
+      const badgeText = document.getElementById('badge').innerText;
+      const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(badgeText)}`;
+      window.open(url, '_blank');
+    }
+
+    function shareOnTwitter() {
+      const badgeText = document.getElementById('badge').innerText;
+      const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(badgeText)}&url=${encodeURIComponent(window.location.href)}`;
+      window.open(url, '_blank');
+    }
+
+    function shareOnLinkedIn() {
+      const badgeText = document.getElementById('badge').innerText;
+      const url = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(window.location.href)}&title=${encodeURIComponent(badgeText)}`;
+      window.open(url, '_blank');
+    }
+    function closeOverlay(event) {
+      // Prevent the click event from propagating to the overlay
+      if (event) {
+        event.stopPropagation();
+      }
+      
+      // Hide the overlay and navigate to the home page
+      document.getElementById('badgeOverlay').classList.remove('visible');
+      window.location.href = 'homepage.html';  // Adjust the path for the homepage
+    }
+    
+    // Example function to trigger the overlay visibility (can be triggered on an event)
+    function showOverlay() {
+      document.getElementById('badgeOverlay').classList.add('visible');
+    }
+    
+    function shareOnWhatsApp() {
+      const userName = document.getElementById('userName').value;
+      const electricity = document.getElementById('electricity').value;
+      const carMiles = document.getElementById('carMiles').value;
+      const flights = document.getElementById('flights').value;
+      const recycledWaste = document.getElementById('recycledWaste').value;
+      const resultText = document.getElementById('result').innerText;
+  
+      if (!userName || !electricity || !carMiles || !flights || !recycledWaste) {
+          alert("Please fill out all fields before sharing.");
+          return;
+      }
+  
+      const message = `🎉 *Certificate of Eco-Achievement* 🌱🏅
+      
+      This is to proudly recognize *${userName}* for their commitment towards a sustainable future! 🌍✨
+      
+      📜 *Carbon Footprint Report:*  
+      🔋 *Electricity Consumption:* ${electricity} kWh  
+      🚗 *Car Miles Driven:* ${carMiles} miles  
+      ✈️ *Flights Taken:* ${flights} per year  
+      ♻️ *Recycled Waste:* ${recycledWaste} kg  
+  
+      🌟 Your efforts in reducing your carbon footprint contribute to a healthier planet!  
+      🙌 *Every step counts—keep making a difference!*  
+  
+      🏆 *Awarded By:* The Recycle Network Team  
+      💚 Let’s inspire others to go green! 🍃♻️  
+  
+      🔗 *Join the movement now!*`;
+  
+      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+      window.open(whatsappUrl, "_blank");
+  }
+  
+  </script>
+</body>
+</html>
+

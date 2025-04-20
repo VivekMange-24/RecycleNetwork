@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+  /* Reset and Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Ubuntu', sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, #2e8b57, #66cdaa);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  text-align: center;
+}
+
+/* Contact Form Styling */
+#contact-form {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  max-width: 600px;
+  width: 100%;
+  animation: fadeIn 1s ease-in-out;
+}
+
+h2 {
+  color: #2e8b57;
+  font-size: 2.2rem;
+  margin-bottom: 1rem;
+}
+
+label {
+  display: block;
+  text-align: left;
+  font-weight: bold;
+  color: #333;
+  margin-top: 1rem;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 0.8rem;
+  margin-top: 0.3rem;
+  border: 2px solid #66cdaa;
+  border-radius: 8px;
+  transition: all 0.3s;
+}
+
+input:focus, textarea:focus {
+  border-color: #2e8b57;
+  outline: none;
+  box-shadow: 0 0 10px rgba(46, 139, 87, 0.5);
+}
+
+textarea {
+  height: 120px;
+}
+
+/* Submit Button */
+input[type="submit"] {
+  background: #2e8b57;
+  color: white;
+  padding: 0.8rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 1rem;
+}
+
+input[type="submit"]:hover {
+  background: #66cdaa;
+  transform: scale(1.05);
+}
+
+h1,
+p {
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+}
+
+.app {
+  width: 90%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.item {
+  width: 90px;
+  height: 90px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+}
+.radio {
+  display: none;
+}
+.radio ~ span {
+  font-size: 3rem;
+  filter: grayscale(100);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.radio:checked ~ span {
+  filter: grayscale(0);
+  font-size: 4rem;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+</style>
+ 
+
+<body>
+    <section id="contact-form">
+        <h2>Contact</h2>
+        <form id="contact" name="contact" accept-charset="utf-8">
+          <label><span>Name</span><input name="name" type="text" placeholder="Name"/></label>
+          <label><span>Email</span><input name="email" type="email" placeholder="Email"/></label>
+          <div class="app">
+            <p>Let us know how we did</p>
+          
+            <div class="container">
+              <div class="item">
+                <label for="0">
+                <input class="radio" type="radio" name="feedback" id="0" value="0">
+                <span>😢</span>
+              </label>
+              </div>
+          
+              <div class="item">
+                <label for="1">
+                <input class="radio" type="radio" name="feedback" id="1" value="1">
+                <span>🙁</span>
+              </label>
+              </div>
+          
+              <div class="item">
+                <label for="2">
+                <input class="radio" type="radio" name="feedback" id="2" value="2">
+                <span>😶</span>
+              </label>
+              </div>
+          
+              <div class="item">
+                <label for="3">
+                <input class="radio" type="radio" name="feedback" id="3" value="3">
+                <span>😁</span>
+              </label>
+              </div>
+          
+              <div class="item">
+                <label for="4">
+                <input class="radio" type="radio" name="feedback" id="4" value="4">
+                <span>😍</span>
+              </label>
+              </div>
+          
+            </div>
+          </div>
+          <label><span>Message</span><textarea name="message" placeholder="Message"></textarea></label>
+          <input name="submit" type="submit" value="Send"/>
+        </form>
+      </section>
+      <script>
+        form.on('submit', function(e) {
+            e.preventDefault();
+            
+            // avoid spamming buttons
+            if (submit.attr('value') !== 'Send')
+              return;
+            
+            var valid = true;
+            form.find('input, textarea').removeClass('invalid').each(function() {
+              if (!this.value) {
+                $(this).addClass('invalid');
+                valid = false;
+              }
+            });
+            
+            if (!valid) {
+              form.animate({left: '-3em'},  50)
+                  .animate({left:  '3em'}, 100)
+                  .animate({left:    '0'},  50);
+            } else {
+              submit.attr('value', 'Sending...')
+                    .css({boxShadow: '0 0 200em 200em rgba(225, 225, 225, 0.6)',
+                          backgroundColor: '#ccc'});
+              // simulate AJAX response
+              setTimeout(function() {
+                // step 1: slide labels and inputs
+                // when AJAX responds with success
+                // no animation for AJAX failure yet
+                form.find('label')
+                    .animate({left: '100%'}, 500)
+                    .animate({opacity: '0'}, 500);
+              }, 1000);
+              setTimeout(function() {
+                // step 2: show thank you message after step 1
+                submit.attr('value', 'Thank you :)')
+                      .css({boxShadow: 'none'});
+              }, 2000);
+              setTimeout(function() {
+                // step 3: reset
+                form.find('input, textarea').val('');
+                form.find('label')
+                    .css({left: '0'})
+                    .animate({opacity: '1'}, 500);
+                submit.attr('value', 'Send')
+                      .css({backgroundColor: ''});
+              }, 4000);
+            }
+          });
+      </script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const contactForm = document.getElementById('contact');
+
+    contactForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const formData = {
+            name: document.querySelector('input[name="name"]').value.trim(),
+            email: document.querySelector('input[name="email"]').value.trim(),
+            feedback: document.querySelector('input[name="feedback"]:checked')?.value,
+            message: document.querySelector('textarea[name="message"]').value.trim()
+        };
+
+        if (!formData.name || !formData.email || !formData.feedback || !formData.message) {
+            alert('Please fill in all fields and select a rating.');
+            return;
+        }
+
+        try {
+            const response = await fetch('/submit-feedback', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+
+            if (response.ok) {
+                alert('Thank you for your feedback!');
+                window.location.href = 'homepage.html';
+            } else {
+                alert('Error submitting feedback. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An unexpected error occurred. Please try again later.');
+        }
+    });
+});
+
+</script>
+</body>
+</html>

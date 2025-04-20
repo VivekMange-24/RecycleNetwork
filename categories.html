@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buyer & Seller Cards</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Langar&family=New+Amsterdam&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Syne+Tactile&display=swap');
+    body {
+      font-family: "Josefin Sans";
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-size: auto;
+      background:  rgb(206, 241, 226)
+
+      ;
+    }
+
+    .cards-container {
+      display: flex;
+      gap: 20px;
+    }
+
+    .card {
+      width: 200px;
+      height: 250px;
+      background: linear-gradient(to right, rgb(0, 80, 0), rgb(20, 90, 92)), 
+      url('hero-bg.jpg') no-repeat center center/cover;
+      border: 2px solid darkgreen;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgb(0, 0, 0);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      z-index: 100;
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .card a {
+      display: block;
+      text-decoration: none;
+      color: #f4eeee;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .card h3 {
+      margin: 0;
+    }
+    .bg-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 10vw;
+      font-weight: bold;
+      color: rgba(0, 0, 0, 0.268);
+      text-transform: uppercase;
+      font-family: 'Rubik Glitch', cursive;
+      width: 100%;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-text">RECYCLE NETWORK</div>
+  <div class="cards-container">
+    <!-- Buyer Card -->
+    <div class="card" onclick="window.location.href='buyer.html'">
+      <a href="buyer.html">
+        <h3>Buyer</h3>
+        <p>Click to explore buyer options</p>
+      </a>
+    </div>
+
+    <!-- Seller Card -->
+    <div class="card" onclick="window.location.href='seller.html'">
+      <a href="seller.html">
+        <h3>Seller</h3>
+        <p>Click to explore seller options</p>
+      </a>
+    </div>
+  </div>
+
+</body>
+</html>

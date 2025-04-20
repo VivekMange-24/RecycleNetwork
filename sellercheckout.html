@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Addresses</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      width: 80%;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .address-form {
+      margin-bottom: 20px;
+    }
+    .address-form input, .address-form select {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0;
+      box-sizing: border-box;
+    }
+    .address-list {
+      margin-top: 20px;
+    }
+    .address-item {
+      padding: 10px;
+      background-color: #f9f9f9;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+    }
+    .address-item button {
+      margin-right: 10px;
+    }
+    .address-item.selected {
+      background-color: #d3f9d8;
+      border-color: #4CAF50;
+    }
+    .payment-btn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Manage Your Addresses</h2>
+
+  <!-- Add/Edit Order Address Form -->
+  <div class="address-form">
+    <h3>Add/Edit Order Address</h3>
+    <form id="addressForm">
+      <input type="text" id="label" placeholder="Label (Home, Office, etc.)" required>
+      <input type="text" id="address1" placeholder="Address Line 1" required>
+      <input type="text" id="address2" placeholder="Address Line 2 (optional)">
+      <input type="text" id="street" placeholder="Street" required>
+      <input type="text" id="city" placeholder="City" required>
+      <input type="text" id="state" placeholder="State" required>
+      <input type="text" id="zip" placeholder="ZIP Code" required>
+      <input type="text" id="country" placeholder="Country" required>
+      <button type="submit">Add Order Address</button>
+    </form>
+  </div>
+
+  <!-- Order Address List -->
+  <h3>Saved Order Addresses</h3>
+  <div class="address-list" id="addressList">
+    <!-- Order address items will be dynamically added here -->
+  </div>
+
+  <!-- Payment Button -->
+  <button id="paymentBtn" class="payment-btn" disabled>Proceed to Payment</button>
+</div>
+
+<script>
+  const addressForm = document.getElementById('addressForm');
+  const addressList = document.getElementById('addressList');
+  const paymentBtn = document.getElementById('paymentBtn');
+  let selectedOrderAddressId = null;
+
+  // Fetch and display order addresses
+  async function fetchOrderAddresses() {
+    const response = await fetch('/orderaddresses', {
+      method: 'GET',
+      headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+    });
+    const data = await response.json();
+    const orderAddresses = data.orderaddresses || [];
+
+    addressList.innerHTML = '';
+    orderAddresses.forEach(orderAddress => {
+      const addressItem = document.createElement('div');
+      addressItem.classList.add('address-item');
+      addressItem.dataset.id = orderAddress._id;
+      addressItem.innerHTML = `
+        <p><strong>${orderAddress.label}</strong></p>
+        <p>${orderAddress.address1} ${orderAddress.address2}</p>
+        <p>${orderAddress.street}, ${orderAddress.city}, ${orderAddress.state}, ${orderAddress.zip}, ${orderAddress.country}</p>
+        <button onclick="editOrderAddress('${orderAddress._id}')">Edit</button>
+        <button onclick="deleteOrderAddress('${orderAddress._id}')">Delete</button>
+      `;
+      addressItem.addEventListener('click', () => selectOrderAddress(orderAddress._id));
+      addressList.appendChild(addressItem);
+    });
+  }
+
+  // Add order address
+  addressForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const newOrderAddress = {
+      label: document.getElementById('label').value,
+      address1: document.getElementById('address1').value,
+      address2: document.getElementById('address2').value,
+      street: document.getElementById('street').value,
+      city: document.getElementById('city').value,
+      state: document.getElementById('state').value,
+      zip: document.getElementById('zip').value,
+      country: document.getElementById('country').value,
+    };
+
+    const response = await fetch('/add-orderaddress', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+      },
+      body: JSON.stringify(newOrderAddress)
+    });
+
+    const data = await response.json();
+    alert(data.message);
+    fetchOrderAddresses();
+    addressForm.reset();
+  });
+
+  // Edit order address
+  function editOrderAddress(orderAddressId) {
+    const orderAddress = document.querySelector(`[data-id='${orderAddressId}']`);
+    document.getElementById('label').value = orderAddress.querySelector('strong').textContent;
+    document.getElementById('address1').value = orderAddress.querySelector('p:nth-of-type(1)').textContent.trim();
+    document.getElementById('address2').value = orderAddress.querySelector('p:nth-of-type(2)').textContent.trim();
+    document.getElementById('street').value = orderAddress.querySelector('p:nth-of-type(3)').textContent.trim();
+    document.getElementById('city').value = orderAddress.querySelector('p:nth-of-type(4)').textContent.trim();
+    document.getElementById('state').value = orderAddress.querySelector('p:nth-of-type(5)').textContent.trim();
+    document.getElementById('zip').value = orderAddress.querySelector('p:nth-of-type(6)').textContent.trim();
+    document.getElementById('country').value = orderAddress.querySelector('p:nth-of-type(7)').textContent.trim();
+
+    // Change the submit to update the order address
+    addressForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const updatedOrderAddress = {
+        label: document.getElementById('label').value,
+        address1: document.getElementById('address1').value,
+        address2: document.getElementById('address2').value,
+        street: document.getElementById('street').value,
+        city: document.getElementById('city').value,
+        state: document.getElementById('state').value,
+        zip: document.getElementById('zip').value,
+        country: document.getElementById('country').value,
+      };
+
+      const response = await fetch(`/edit-orderaddress/${orderAddressId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        },
+        body: JSON.stringify(updatedOrderAddress)
+      });
+
+      const data = await response.json();
+      alert(data.message);
+      fetchOrderAddresses();
+      addressForm.reset();
+    });
+  }
+
+  // Delete order address
+  async function deleteOrderAddress(orderAddressId) {
+    const response = await fetch(`/delete-orderaddress/${orderAddressId}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+      }
+    });
+
+    const data = await response.json();
+    alert(data.message);
+    fetchOrderAddresses();
+  }
+
+  // Select order address for payment
+  function selectOrderAddress(orderAddressId) {
+    const addressItems = document.querySelectorAll('.address-item');
+    addressItems.forEach(item => item.classList.remove('selected'));
+
+    const selectedItem = document.querySelector(`[data-id='${orderAddressId}']`);
+    selectedItem.classList.add('selected');
+    selectedOrderAddressId = orderAddressId;
+    paymentBtn.disabled = false;
+  }
+
+  // Proceed to payment
+  paymentBtn.addEventListener('click', () => {
+    if (selectedOrderAddressId) {
+      alert(`Proceeding to payment with order address`);
+      window.location.href = "sellerpayment.html";
+      // You can add your payment logic here
+    } else {
+      alert('Please select an order address.');
+    }
+  });
+
+  // Initial fetch of order addresses
+  fetchOrderAddresses();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recycle Network Welcome</title>
+    <style>
+        body {
+            background-color: #4CAF50;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .falling-text {
+            font-size: 3em;
+            font-weight: bold;
+            position: absolute;
+            top: -100px;
+            animation: fall 2s ease-in-out forwards;
+        }
+
+        @keyframes fall {
+            0% { top: -100px; opacity: 0; }
+            100% { top: 40%; opacity: 1; }
+        }
+
+        .welcome-message {
+            font-size: 1.5em;
+            margin-top: 20px;
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="falling-text" id="fallingText">RECYCLE NETWORK</div>
+    <div class="welcome-message" id="welcomeMessage">Welcome! Thanks for scanning the QR code.</div>
+
+    <script>
+        // Show welcome message after falling animation completes
+        setTimeout(() => {
+            document.getElementById("welcomeMessage").style.opacity = "1";
+        }, 2000);
+    </script>
+
+</body>
+</html>

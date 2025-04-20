@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recycle Network</title>
+    <link rel="stylesheet" href="page1.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <img src="images/logo1.png" alt="Recycle Network Logo">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="homepage.html">Home</a></li>
+                <li><a href="categories.html">Categories</a></li>
+                <li><a href="profile.html">My Dashboard</a></li>
+                <li><a href="feedback.html">Contact Us</a></li>
+            </ul>
+        </nav>
+        <div class="auth-buttons">
+          <a class="login-btn" href="signuppage.html">Login</a>
+          <a class="logout-btn" style="display: none;" href="javascript:void(0);">Logout</a>
+      </div>
+    </header>
+
+    <!-- Main Hero Section -->
+    <section class="hero">
+        <h1>Turn Your Waste into Value</h1>
+        <p>Recycle today and make a difference for tomorrow.</p>
+        <a class="login-btn" id="start-btn" style="font-size:x-large; 
+        ; border-radius:20px; font-family:monospace; font-weight:bolder">Start Recycling</a>
+    </section>
+
+    <!-- About Section -->
+    <section class="about">
+        <h2>About Us</h2>
+        <p>We are on a mission to reduce waste and make recycling accessible and rewarding for everyone.</p>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works">
+        <h2>How It Works</h2>
+        <div class="steps">
+            <div class="step">
+                <h3>1. Select Items</h3>
+                <p>Choose what you want to recycle from a wide range of categories.</p>
+            </div>
+            <div class="step">
+                <h3>2. Schedule Pickup</h3>
+                <p>Choose a time and place for us to collect your recyclable materials.</p>
+            </div>
+            <div class="step">
+                <h3>3. Get Rewarded</h3>
+                <p>Earn discounts, coupons, and rewards for your eco-friendly actions.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Categories Section -->
+    <section class="categories">
+        <h2>Featured Categories</h2>
+        <ul>
+            <li><img src="images/metal1.jpeg" alt="Metal"><p>Metal</p></li>
+            <li><img src="images/paper1.jpeg" alt="Paper"><p>Paper</p></li>
+            <li><img src="images/ewaste1.jpg" alt="E-Waste"><p>E-Waste</p></li>
+        </ul>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <h2>What Our Users Say</h2>
+        <blockquote>"Recycling with Recycle Network has been a game-changer for me! The rewards are great, and it's so easy!" - Jane D.</blockquote>
+        <blockquote>"I love how simple it is to schedule pickups. This is an amazing service!" - John S.</blockquote>
+    </section>
+   
+    <div class="cal-btn">
+      <a href="calculator.html" class="calculator-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368">
+          <path d="M260-840q-45 0-72.5 50T160-680q0 63 17.5 111.5T210-496l110-22q13-32 26.5-73t13.5-89q0-60-27.5-110T260-840Zm55 520q19 0 32-14t13-39q0-17-8-35t-16-32l-96 20q0 40 17.5 70t57.5 30Zm385-320q-45 0-72.5 50T600-480q0 48 13.5 88.5T640-318l110 22q15-24 32.5-72T800-480q0-60-27.5-110T700-640Zm-55 520q40 0 57.5-30t17.5-70l-96-20q-8 14-16 32t-8 35q0 20 12.5 36.5T645-120ZM315-240q-77 0-117-57t-38-128l-18-27q-11-17-36.5-77T80-680q0-103 51-171.5T260-920q85 0 132.5 75.5T440-680q0 58-16 107t-28 79l8 13q8 14 22 44.5t14 63.5q0 57-35.5 95T315-240ZM645-40q-54 0-89.5-38T520-173q0-33 14-63.5t22-44.5l8-13q-12-30-28-79t-16-107q0-89 47.5-164.5T700-720q78 0 129 68.5T880-480q0 91-25.5 150.5T818-253l-18 28q1 71-38.5 128T645-40Z"/>
+        </svg>
+        <span class="tooltip-text">Carbon Footprint</span>
+      </a>
+    </div>
+    
+    
+    <!-- Footer -->
+    <footer>
+        <div class="footer-links">
+            <ul>
+                <li><a href="#" onclick="openTermsPanel()">Terms & Conditions</a></li>
+                <li><a href="#" onclick="openPrivacyPanel()">Privacy Policy</a></li>
+                <li><a href="#" onclick="openFaqPanel()">FAQ</a></li>
+            </ul>
+        </div>
+        <div class="social-media">
+            <a href="#">Facebook</a> | <a href="#">Twitter</a> | <a href="#">Instagram</a>
+        </div>
+        <p>Contact Us: recyclenetwork0@gmail.com</p>
+    </footer>
+    <!-- Terms & Conditions Panel -->
+<div id="termsPanel" class="terms-overlay">
+    <div class="terms-content">
+      <span class="close-btn" onclick="closeTermsPanel()">&times;</span>
+      <h2>Terms & Conditions</h2>
+      <p>Welcome to Recycle Network. By using our platform, you agree to the following terms:</p>
+      <ul>
+        <li>Users must provide accurate information when registering.</li>
+        <li>Recycling services are available only for accepted waste materials.</li>
+        <li>Cash on delivery is provided based on accurate waste weight.</li>
+        <li>Users will receive accurate price based on their recycling contributions.</li>
+        <li>Recycle Network reserves the right to modify terms at any time.</li>
+      </ul>
+      <p>For more details, contact our support team.</p>
+    </div>
+  </div>
+  <div id="privacyPanel" class="terms-overlay">
+    <div class="terms-content">
+      <span class="close-btn" onclick="closePrivacyPanel()">&times;</span>
+      <h2>Privacy Policy</h2>
+      <p>Recycle Network values your privacy. Our policy includes:</p>
+      <ul>
+        <li>We collect necessary data to improve our services.</li>
+        <li>Your data will not be shared without consent.</li>
+        <li>We implement strong security measures to protect your information.</li>
+        <li>Users can request data deletion at any time.</li>
+        <li>Recycle Network reserves the right to update this policy as needed.</li>
+      </ul>
+      <p>For more details, contact our support team.</p>
+    </div>
+  </div>
+  <div id="faqPanel" class="terms-overlay">
+    <div class="terms-content">
+      <span class="close-btn" onclick="closeFaqPanel()">&times;</span>
+      <h2>Frequently Asked Questions (FAQ)</h2>
+      <p>Find answers to common questions about Recycle Network:</p>
+      <ul>
+        <li><strong>How do I recycle waste?</strong> - Simply place an order through our platform, and our team will collect your waste.</li>
+        <li><strong>What materials are accepted?</strong> - We accept steel, metal, brass, copper, paper, aluminum, e-waste, car items, machinery, and more.</li>
+        <li><strong>How are rewards calculated?</strong> - Rewards are based on the type and weight of recycled materials.</li>
+        <li><strong>Can I track my recycling progress?</strong> - Yes, you can track orders and set recycling goals in your user dashboard.</li>
+        <li><strong>What if I need support?</strong> - Contact our customer support team for assistance.</li>
+      </ul>
+      <p>For more details, reach out to us anytime.</p>
+    </div>
+  </div>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    // ---------------- SIGN-UP FORM SUBMISSION ----------------
+    const signUpForm = document.querySelector('.sign-up-container form');
+    
+    if (signUpForm) {
+        signUpForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+        
+            const name = document.querySelector('input[placeholder="Name"]').value;
+            const email = document.querySelector('input[placeholder="Email"]').value;
+            const password = document.querySelector('input[placeholder="Password"]').value;
+            const address = document.querySelector('input[placeholder="Address"]').value;
+            const phoneNumber = document.querySelector('input[placeholder="Phone Number"]').value;
+        
+            try {
+                const response = await fetch('http://localhost:5000/api/auth/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password, address, phoneNumber }),
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    alert(result.message);
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (err) {
+                console.error('Error:', err.message);
+            }
+        });
+    } else {
+        console.warn("Sign-up form not found in the DOM!");
+    }
+
+    // ---------------- SIGN-IN FORM SUBMISSION ----------------
+    const signInForm = document.querySelector('.sign-in-container form');
+
+    if (signInForm) {
+        signInForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.querySelector('.sign-in-container input[placeholder="Email"]').value;
+            const password = document.querySelector('.sign-in-container input[placeholder="Password"]').value;
+
+            try {
+                const response = await fetch('http://localhost:5000/api/auth/signin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password }),
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    alert('Login Successful');
+                    // Save token to local storage
+                    localStorage.setItem('token', result.token);
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (err) {
+                console.error('Error:', err.message);
+            }
+        });
+    } else {
+        console.warn("Sign-in form not found in the DOM!");
+    }
+
+    // ---------------- START RECYCLING BUTTON NAVIGATION ----------------
+    const startBtn = document.getElementById('start-btn');
+
+    if (startBtn) {
+        startBtn.addEventListener('click', (event) => {
+            event.preventDefault(); // Prevent unintended default behavior
+
+            // Check if the user is logged in (by checking for a token in localStorage)
+            const token = localStorage.getItem('token');
+
+            if (token) {
+                // User is logged in, navigate to cart.html
+                window.location.href = 'categories.html';
+            } else {
+                // User is not logged in, navigate to signuppage.html
+                window.location.href = 'signuppage.html';
+            }
+        });
+    } else {
+        console.error("Start button not found in the DOM!");
+    }
+});
+
+function openTermsPanel() {
+    document.getElementById("termsPanel").style.display = "flex";
+  }
+  
+  function closeTermsPanel() {
+    document.getElementById("termsPanel").style.display = "none";
+  }
+  
+  function openPrivacyPanel() {
+    document.getElementById("privacyPanel").style.display = "flex";
+  }
+  
+  function closePrivacyPanel() {
+    document.getElementById("privacyPanel").style.display = "none";
+  }
+  
+  function openFaqPanel() {
+    document.getElementById("faqPanel").style.display = "flex";
+  }
+  
+  function closeFaqPanel() {
+    document.getElementById("faqPanel").style.display = "none";
+  }
+
+</script>
+<script src="index.js"></script>
+</body>
+</html>

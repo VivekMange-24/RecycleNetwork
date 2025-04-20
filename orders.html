@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>All User Orders - Admin Panel</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    .admin-order {
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+    }
+
+    h3 {
+      margin: 0 0 5px;
+    }
+
+    ul {
+      margin-top: 5px;
+      padding-left: 20px;
+    }
+
+    hr {
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+    <div class="container">
+      <h2>Order Confirmation</h2>
+      <p>Name: <span id="user-name"></span></p>
+      <p>Email: <span id="user-email"></span></p>
+      <div id="cart-container"></div>
+      <div class="total">Total Paid: Rs <span id="total-amount">0</span></div>
+    </div>
+  
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const order = JSON.parse(localStorage.getItem("orderSummary"));
+  
+        if (!order) {
+          alert("No order found. Please complete payment first.");
+          window.location.href = "buycart.html"; // or wherever your cart page is
+          return;
+        }
+  
+        // Display user info
+        document.getElementById("user-name").innerText = order.name;
+        document.getElementById("user-email").innerText = order.email;
+  
+        // Display cart items
+        const cartContainer = document.getElementById("cart-container");
+        let totalAmount = 0;
+  
+        order.items.forEach(item => {
+          const div = document.createElement("div");
+          div.classList.add("cart-item");
+          div.innerHTML = `
+            <div><strong>${item.title}</strong> - Rs ${item.price} x ${item.quantity}</div>
+            <div>Total: Rs ${item.price * item.quantity}</div>
+          `;
+          cartContainer.appendChild(div);
+          totalAmount += item.price * item.quantity;
+        });
+  
+        document.getElementById("total-amount").innerText = totalAmount;
+      });
+    </script>
+  </body>
+  
+  
+</html>

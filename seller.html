@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recycle Market Rates</title>
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <style>
+    .search-container {
+        display: flex;
+        align-items: center;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 25px;
+        padding: 5px 15px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        width: 300px;
+        margin-bottom: 20px;
+        border-bottom: 2px solid green;
+      }
+  
+      #search-bar {
+        flex: 1;
+        border: none;
+        outline: none;
+        font-size: 16px;
+        padding: 8px;
+        border-radius: 25px;
+      }
+  
+      .search-container i {
+        font-size: 20px;
+        color: #666;
+        margin-left: 10px;
+        cursor: pointer;
+      }
+    
+      header {
+        position: relative;
+        width: 100%;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 20px;
+        background-color: #f8f9fa;
+      }
+    
+      .search-container {
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+    
+      .view-cart-btn {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        width: 40px;
+        height: 40px;
+        background: url('https://media.istockphoto.com/id/898475764/vector/shopping-trolley-cart-icon-in-green-circle-vector.jpg?s=612x612&w=0&k=20&c=W_b90qFRpj_FyLyI19xWqB6EoNSuJYwMSN9nnKkE9Hk=') no-repeat center center;
+        background-size: contain;
+        text-indent: -9999px;
+        border: none;
+        cursor: pointer;
+    }
+    
+      .view-cart-btn:hover {
+        opacity: 0.8;
+      }
+  
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+  
+      #items-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        padding: 20px;
+        max-width: 1200px;
+      }
+  
+      .card {
+        background: white;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 250px;
+        width: 100%;
+      }
+  
+      .card-icon {
+        font-size: 40px;
+      }
+  
+      .card-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin: 10px 0;
+      }
+  
+      .card-price {
+        font-size: 16px;
+        color: green;
+        font-weight: bold;
+      }
+  
+      .card-footer {
+        font-size: 14px;
+        color: gray;
+      }
+  
+      .quantity-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        gap: 5px;
+        margin-top: 10px;
+      }
+  
+      .quantity-btn {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+  
+      .quantity-input {
+        width: 40px;
+        text-align: center;
+        font-size: 16px;
+        min-width: 40px;
+      }
+  
+      .add-to-cart-btn {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        padding: 10px;
+        margin-top: 10px;
+        cursor: pointer;
+        font-size: 16px;
+        border-radius: 5px;
+      }
+  
+      .add-to-cart-btn:hover {
+        background-color: #218838;
+      }
+  
+      @media (max-width: 900px) {
+        #items-container {
+            grid-template-columns: repeat(2, 1fr);
+        }
+      }
+  
+      @media (max-width: 600px) {
+        #items-container {
+            grid-template-columns: repeat(1, 1fr);
+        }
+      }
+  
+  
+    
+  </style>
+</head>
+<body>
+  <header>
+      <div class="search-container">
+          <input type="text" id="search-bar" placeholder="Search items..." onkeyup="filterItems()">
+          <i class='bx bx-search-alt-2'></i>
+      </div>
+      <a href="sellercart.html" class="view-cart-btn">View Cart</a>
+  </header>
+  
+  <div id="items-container"></div>
+  
+  <script>
+      const items = [
+           // Normal Recyclables
+  { icon: "📄", title: "Office Paper (A3/A4)", price: 14, category: "Normal Recyclables" },
+  { icon: "📰", title: "Newspaper", price: 14, category: "Normal Recyclables" },
+  { icon: "📚", title: "Copies/Books", price: 12, category: "Market Rates Dropped Recently" },
+  { icon: "📦", title: "Cardboard", price: 8, category: "Normal Recyclables" },
+  { icon: "🛢️", title: "PET Bottles/Plastic", price: 8, category: "Normal Recyclables" },
+  { icon: "🔩", title: "Iron", price: 26, category: "Normal Recyclables" },
+  { icon: "🍽️", title: "Steel Utensils", price: 40, category: "Normal Recyclables" },
+  { icon: "🥇", title: "Aluminium", price: 105, category: "Normal Recyclables" },
+  { icon: "⚙️", title: "Brass", price: 305, category: "Normal Recyclables" },
+  { icon: "⚡", title: "Copper", price: 425, category: "Normal Recyclables" },
+  
+  // E-Waste
+  { icon: "📱", title: "Mobile", price: 5000, category: "E-Waste" },
+  { icon: "🖥️", title: "Computer", price: 15000, category: "E-Waste" },
+  { icon: "❄️", title: "Split AC Copper Coil 1.5 Ton", price: 4150, category: "E-Waste" },
+  { icon: "🧺", title: "Top Load Fully Automatic Washing Machine", price: 1000, category: "E-Waste" },
+  { icon: "🧺", title: "Semi Automatic Washing Machine", price: 750, category: "E-Waste" },
+  { icon: "🌡️", title: "Geyser", price: 650, category: "E-Waste" },
+  { icon: "🧊", title: "Single Door Fridge", price: 1100, category: "E-Waste" },
+  { icon: "🧊", title: "Double Door Fridge", price: 1350, category: "E-Waste" },
+  { icon: "❄️", title: "Iron Cooler", price: 600, category: "E-Waste" },
+  { icon: "❄️", title: "Plastic Cooler", price: 300, category: "E-Waste" },
+  { icon: "🖨️", title: "Printer/Scanner/Fax Machine", price: 200, category: "E-Waste" },
+  { icon: "🖥️", title: "CRT Monitor", price: 100, category: "E-Waste" },
+  { icon: "🖥️", title: "LED/LCD Monitor", price: 500, category: "E-Waste" },
+  { icon: "📺", title: "CRT TV", price: 150, category: "E-Waste" },
+  { icon: "📺", title: "LED/LCD TV", price: 800, category: "E-Waste" },
+  { icon: "🖥️", title: "Desktop CPU", price: 700, category: "E-Waste" },
+  { icon: "💻", title: "Laptop", price: 3000, category: "E-Waste" },
+  { icon: "📠", title: "Photocopier Machine", price: 1200, category: "E-Waste" },
+  { icon: "☎️", title: "Landline Phone", price: 50, category: "E-Waste" },
+  { icon: "📡", title: "Set Top Box", price: 100, category: "E-Waste" },
+  { icon: "📡", title: "Satellite Dish", price: 200, category: "E-Waste" },
+  { icon: "⏰", title: "Wall Clock", price: 30, category: "E-Waste" },
+  { icon: "🎛️", title: "Amplifier", price: 500, category: "E-Waste" },
+  { icon: "🎥", title: "DVD Player", price: 200, category: "E-Waste" },
+  { icon: "🎮", title: "Gaming Console", price: 1000, category: "E-Waste" },
+  
+  // Other Categories
+  { icon: "🔋", title: "Battery", price: 800, category: "Hazardous Waste" },
+  { icon: "🔋", title: "Lithium Battery", price: 150, category: "Hazardous Waste" },
+  { icon: "💻", title: "Metal E-waste", price: 28, category: "Large Appliances" },
+//Automobiles 
+  { icon: "🚗", title: "Car", price: 200003, category: "Normal Recyclables" },
+  { icon: "🛵", title: "Scooter", price: 12000, category: "Normal Recyclables" },
+];
+      
+      function createCard(item) {
+          const card = document.createElement("div");
+          card.classList.add("card");
+          card.innerHTML = `
+              <div class="card-icon">${item.icon}</div>
+              <div class="card-title">${item.title}</div>
+              <div class="card-price">RS ${item.price}/kg</div>
+              <div class="card-footer">${item.category}</div>
+              <div class="quantity-container">
+                  <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
+                  <input type="number" class="quantity-input" value="1" min="1">
+                  <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
+              </div>
+              <button class="add-to-cart-btn" onclick="addToCart('${item.title}', ${item.price}, this)">Add to Cart</button>
+          `;
+          document.getElementById("items-container").appendChild(card);
+      }
+      
+      function filterItems() {
+          const searchInput = document.getElementById('search-bar').value.toLowerCase();
+          const cards = document.querySelectorAll('.card');
+          cards.forEach(card => {
+              const title = card.querySelector('.card-title').textContent.toLowerCase();
+              card.style.display = title.includes(searchInput) ? 'block' : 'none';
+          });
+      }
+      
+      function increaseQuantity(button) {
+          const input = button.previousElementSibling;
+          input.value = parseInt(input.value) + 1;
+      }
+      
+      function decreaseQuantity(button) {
+          const input = button.nextElementSibling;
+          if (parseInt(input.value) > 1) {
+              input.value = parseInt(input.value) - 1;
+          }
+      }
+      
+      async function addToCart(title, price, button) {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        alert("Please log in to add items to the cart.");
+        window.location.href = "homepage.html";
+        return;
+    }
+
+    const card = button.parentElement;
+    const quantity = parseInt(card.querySelector(".quantity-input").value);
+
+    try {
+        const response = await fetch("/add-to-cart", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({ title, price, quantity })
+        });
+
+        if (!response.ok) throw new Error("Failed to add item");
+
+        alert(`${title} added to cart!`);
+    } catch (error) {
+        console.error("Error adding item:", error);
+    }
+}
+
+
+    
+      // Generate all cards
+      items.forEach(createCard);
+  </script>
+</body>
+</html>

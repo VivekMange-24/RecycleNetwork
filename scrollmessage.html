@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body {
+    height: 2000px;
+    margin: 0;
+    background: #f1f1f1;
+    font-family: Arial, sans-serif;
+  }
+
+  /* Centering the h2 and p elements at the top */
+  h2, p {
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  #mySVG {
+    position: fixed;
+    top: 50%; /* Position it vertically at the center */
+    left: 50%; /* Position it horizontally at the center */
+    transform: translate(-50%, -50%); /* Offset the position to truly center */
+    width: 600px;
+    height: 200px;
+    font-size: 24px;
+    font-weight: bold;
+    fill: green;
+    opacity: 0; /* Start invisible */
+    transition: opacity 0.5s;
+  }
+
+  /* Specific style for the full recycling message */
+  #recycleText {
+    font-weight: bold;
+    font-size: 40px;  /* Larger font size */
+    fill: green;      /* Green color for the entire message */
+    text-anchor: middle;
+    alignment-baseline: middle;
+  }
+
+  /* Style for the image button */
+  .image-button {
+    display: block;
+    width: 200px;
+    height: 60px;
+    background-image: url('https://example.com/your-image.png'); /* Replace with your image URL */
+    background-size: cover;
+    background-position: center;
+    border: none;
+    margin: 20px auto; /* Centers the button below the message */
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+<!-- Dashboard starts here -->
+
+<h2>Scroll down this window to see a recycling message.</h2>
+<p>Scroll back up to hide the message.</p>
+
+<svg id="mySVG" viewBox="0 0 600 200">
+  <text id="recycleText" x="50%" y="50%" text-anchor="middle" alignment-baseline="middle">Recycle for a Greener Planet</text>
+</svg>
+
+<!-- Image Button -->
+<button class="image-button" onclick="alert('Image Button Clicked!')"></button>
+
+<script>
+  // Get the SVG element
+  var mySVG = document.getElementById("mySVG");
+
+  // Add scroll event listener to adjust opacity based on scroll position
+  window.addEventListener("scroll", function() {
+    var scrollpercent = (document.body.scrollTop + document.documentElement.scrollTop) / (document.documentElement.scrollHeight - document.documentElement.clientHeight);
+    
+    // Adjust opacity based on scroll percentage
+    mySVG.style.opacity = scrollpercent; // Text appears as you scroll down
+  });
+</script>
+
+</body>
+</html>

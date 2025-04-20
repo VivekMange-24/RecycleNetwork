@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        background: linear-gradient(to right, #2E7D32, #388E3C, #1B5E20);
+        color: white;
+        text-align: center;
+    }
+    h1 {
+        font-size: 2.5em;
+        margin-bottom: 20px;
+    }
+    #default-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        border: 4px solid white;
+        margin-bottom: 20px;
+    }
+    #avatar-selection {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    .avatar-container {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    .avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        border: 2px solid white;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+    .avatar:hover {
+        transform: scale(1.1);
+    }
+    p {
+        font-size: 1.2em;
+    }
+    #logout-btn, #order {
+        background: #C62828;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1em;
+        margin-top: 20px;
+        transition: background 0.3s;
+    }
+    #logout-btn:hover {
+        background: #B71C1C;
+    }
+    .log{
+        position: absolute;
+        top: 5px;
+        left: 20px;
+        cursor:alias;
+    }
+
+</style>
+</head>
+<body>
+    <div class="log" onclick="window.location.href = 'homepage.html'">
+        <img src="images/logo1.png" alt="logo" height="100px" width="100px">
+    </div>
+    <h1>Welcome to Your Dashboard</h1>
+    <!-- Default Avatar -->
+    <img id="default-avatar" src="avatars/default.png" alt="User Avatar">
+
+    <!-- Avatar Selection (Initially Hidden) -->
+    <div id="avatar-selection">
+        <h3>Select an Avatar:</h3>
+        <div class="avatar-container">
+            <img class="avatar" src="avatars/avatar1.png" data-avatar="avatar1.png" alt="Avatar 1">
+            <img class="avatar" src="avatars/avatar2.png" data-avatar="avatar2.png" alt="Avatar 2">
+            <img class="avatar" src="avatars/avatar3.png" data-avatar="avatar3.png" alt="Avatar 3">
+            <img class="avatar" src="avatars/avatar4.png" data-avatar="avatar4.png" alt="Avatar 4">
+            <img class="avatar" src="avatars/avatar5.png" data-avatar="avatar5.png" alt="Avatar 5">
+        </div>
+    </div>
+    <div>
+        <p>Name: <span id="user-name"></span></p>
+        <p>Email: <span id="user-email"></span></p>
+    </div>
+    <button id="order" onclick="window.location.href='orders.html'">Order</button>
+    <button id="logout-btn">Logout</button>
+
+    <script>
+        const token = localStorage.getItem('token');
+
+        if (!token) {
+            alert('You must be logged in to view this page');
+            window.location.href = '/homepage.html';
+        }
+
+        // Fetch user profile data from the backend
+        const fetchUserProfile = async () => {
+            try {
+                const response = await fetch('http://localhost:5100/profile', {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    document.getElementById('user-name').innerText = result.name;
+                    document.getElementById('user-email').innerText = result.email;
+                   
+
+                    // Load selected avatar or use default
+                    const storedAvatar = localStorage.getItem('selectedAvatar') || result.selectedAvatar || 'avatars/default.png';
+                    document.getElementById('default-avatar').src = `avatars/${storedAvatar}`;
+                } else {
+                    alert(result.message || 'Error fetching user data');
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+                alert('An error occurred while fetching user data');
+            }
+        };
+
+        // Save selected avatar both locally and in the backend
+        const saveAvatarSelection = async (avatar) => {
+            try {
+                const response = await fetch('http://localhost:5100/save-avatar', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ avatar })
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    localStorage.setItem('selectedAvatar', avatar);
+                    document.getElementById('default-avatar').src = `avatars/${avatar}`;
+                    document.getElementById('avatar-selection').style.display = 'none';
+                } else {
+                    alert(result.message || 'Error saving avatar selection');
+                }
+            } catch (error) {
+                console.error('Error saving avatar selection:', error);
+                alert('An error occurred while saving avatar selection');
+            }
+        };
+
+        // Show avatar selection when clicking the default avatar
+        document.getElementById('default-avatar').addEventListener('click', () => {
+            document.getElementById('avatar-selection').style.display = 'block';
+        });
+
+        // Save selected avatar when clicked
+        document.querySelectorAll('.avatar').forEach(img => {
+            img.addEventListener('click', () => {
+                saveAvatarSelection(img.dataset.avatar);
+            });
+        });
+
+        // Logout function
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            localStorage.removeItem('token');
+            localStorage.removeItem('selectedAvatar'); // Clear avatar selection on logout
+            window.location.href = '/homepage.html';
+        });
+
+        // Load user profile on page load
+        fetchUserProfile();
+    </script>
+</body>
+</html>

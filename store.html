@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Summary</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Order Summary</h1>
+    </header>
+    
+    <section id="user-info">
+        <h2>User Details</h2>
+        <p><strong>Name:</strong> <span id="userName"></span></p>
+        <p><strong>Email:</strong> <span id="userEmail"></span></p>
+    </section>
+    
+    <section id="selected-address">
+        <h2>Shipping Address</h2>
+        <div id="address-container"></div>
+    </section>
+    
+    <section id="cart-container">
+        <h2>Your Cart</h2>
+        <div id="cart-items"></div>
+        <p><strong>Total Amount:</strong> Rs <span id="total-amount">0</span></p>
+        <button id="rzp-button1">Proceed to Payment</button>
+    </section>
+    
+    <section id="orders">
+        <h2>Your Orders</h2>
+        <div id="orders-container"></div>
+    </section>
+    
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                fetchUserDetails();
+                fetchOrderSummary();
+            });
+        
+            async function fetchUserDetails() {
+                const token = localStorage.getItem("token");
+                if (!token) {
+                    alert("Please log in to view your orders.");
+                    window.location.href = "login.html";
+                    return;
+                }
+        
+                try {
+                    const response = await fetch('/user/details', {
+                        method: 'GET',
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+        
+                    if (!response.ok) throw new Error("Failed to fetch user details");
+        
+                    const user = await response.json();
+                    document.getElementById("userName").textContent = user.name;
+                    document.getElementById("userEmail").textContent = user.email;
+        
+                } catch (error) {
+                    console.error("Error fetching user details:", error);
+                }
+            }
+        
+            async function fetchOrderSummary() {
+                await fetchBuycartItems();
+                fetchSelectedAddress();
+                displayOrders();
+            }
+        
+            async function fetchBuycartItems() {
+                const token = localStorage.getItem("token");
+                if (!token) {
+                    alert("Please log in to view your cart.");
+                    window.location.href = "homepage.html";
+                    return;
+                }
+        
+                try {
+                    const response = await fetch('/buycart', {
+                        method: 'GET',
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+        
+                    if (!response.ok) throw new Error("Failed to fetch buycart");
+        
+                    const buycartData = await response.json();
+                    updateBuycartDisplay(buycartData.items);
+                } catch (error) {
+                    console.error("Error fetching buycart:", error);
+                }
+            }
+        
+            function updateBuycartDisplay(buycartItems) {
+                const cartContainer = document.getElementById("cart-container");
+                const totalAmountElem = document.getElementById("total-amount");
+                cartContainer.innerHTML = "";
+                let totalAmount = 0;
+        
+                if (!buycartItems || buycartItems.length === 0) {
+                    cartContainer.innerHTML = "<p>Your buycart is empty.</p>";
+                    totalAmountElem.textContent = "0";
+                    return;
+                }
+        
+                buycartItems.forEach(item => {
+                    const cartItem = document.createElement("div");
+                    cartItem.classList.add("cart-item");
+                    cartItem.innerHTML = `
+                        <div><strong>${item.title}</strong> - Rs ${item.price} x ${item.quantity}</div>
+                        <div>Total: Rs ${item.price * item.quantity}</div>
+                    `;
+                    cartContainer.appendChild(cartItem);
+                    totalAmount += item.price * item.quantity;
+                });
+        
+                totalAmountElem.textContent = totalAmount;
+                initializeRazorpay(totalAmount);
+            }
+        
+            async function fetchSelectedAddress() {
+                const selectedAddressId = localStorage.getItem('selectedAddressId');
+                if (!selectedAddressId) {
+                    document.getElementById("selected-address").innerHTML = "<p>No address selected.</p>";
+                    return;
+                }
+        
+                try {
+                    const response = await fetch(`/orderaddresses/${selectedAddressId}`, {
+                        method: 'GET',
+                        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                    });
+        
+                    if (!response.ok) throw new Error("Failed to fetch address");
+        
+                    const address = await response.json();
+                    document.getElementById("selected-address").innerHTML = `
+                        <p><strong>Address ID: ${selectedAddressId}</strong></p>
+                        <p><strong>${address.label}</strong></p>
+                        <p>${address.address1} ${address.address2}</p>
+                        <p>${address.street}, ${address.city}, ${address.state}, ${address.zip}, ${address.country}</p>
+                    `;
+                } catch (error) {
+                    console.error("Error fetching selected address:", error);
+                }
+            }
+        
+            function displayOrders() {
+                let orders = JSON.parse(localStorage.getItem('orders')) || [];
+                const ordersContainer = document.getElementById('orders');
+        
+                orders.sort((a, b) => new Date(b.date) - new Date(a.date));
+                ordersContainer.innerHTML = '';
+        
+                if (orders.length > 0) {
+                    orders.forEach((order, index) => {
+                        const orderDiv = document.createElement('div');
+                        orderDiv.classList.add('order');
+                        orderDiv.innerHTML = `
+                            <h3>Order for ${order.userName}</h3>
+                            <p class="order-details"><strong>Address:</strong> ${order.address.label}<br>
+                            ${order.address.street}, ${order.address.city}, ${order.address.state} ${order.address.zip}<br>
+                            ${order.address.country}</p>
+                            <h4>Items:</h4>
+                            <ul>${order.items.map(item => `<li>${item.name} - ${item.quantity} x ₹${item.price}</li>`).join('')}</ul>
+                            <p class="order-details"><strong>Total Price:</strong> ₹${order.totalPrice}</p>
+                            
+                            <label for="status-${index}">Order Status:</label>
+                            <select class="status-select" id="status-${index}" onchange="updateStatus(${index}, this.value)">
+                                <option value="Pending" ${order.status === "Pending" ? "selected" : ""}>Pending</option>
+                                <option value="Order is Packing" ${order.status === "Order is Packing" ? "selected" : ""}>Order is Packing</option>
+                                <option value="Out for Delivery" ${order.status === "Out for Delivery" ? "selected" : ""}>Out for Delivery</option>
+                                <option value="Order Delivered" ${order.status === "Order Delivered" ? "selected" : ""}>Order Delivered</option>
+                            </select>
+        
+                            <button class="remove-btn" onclick="removeOrder(${index})">Remove</button>
+                        `;
+                        ordersContainer.appendChild(orderDiv);
+                    });
+                } else {
+                    ordersContainer.innerHTML = "<p>No orders found.</p>";
+                }
+            }
+        
+            function updateStatus(index, newStatus) {
+                let orders = JSON.parse(localStorage.getItem('orders')) || [];
+                orders[index].status = newStatus;
+                localStorage.setItem('orders', JSON.stringify(orders));
+                displayOrders();
+            }
+        
+            function removeOrder(index) {
+                if (!confirm("Are you sure you want to remove this order?")) return;
+        
+                let orders = JSON.parse(localStorage.getItem('orders')) || [];
+                orders.splice(index, 1);
+                localStorage.setItem('orders', JSON.stringify(orders));
+                displayOrders();
+            }
+        
+            function initializeRazorpay(totalAmount) {
+                var options = {
+                    "key": "rzp_test_hMsYzpYlYfemZT",
+                    "amount": totalAmount * 100,
+                    "currency": "INR",
+                    "name": "Recycle Network",
+                    "description": "Order Payment",
+                    "image": "image/logo.jpeg",
+                    "handler": function (response) {
+                        const orderData = {
+                            paymentId: response.razorpay_payment_id,
+                            amount: totalAmount
+                        };
+        
+                        const existingOrders = JSON.parse(localStorage.getItem('orders')) || [];
+                        existingOrders.push(orderData);
+                        localStorage.setItem('orders', JSON.stringify(existingOrders));
+        
+                        window.location.href = 'ok.html';
+                    },
+                    "prefill": { "name": "", "email": "", "contact": "" },
+                    "theme": { "color": "#3399cc" }
+                };
+        
+                document.getElementById('rzp-button1').onclick = function (e) {
+                    var rzp1 = new Razorpay(options);
+                    rzp1.open();
+                    e.preventDefault();
+                };
+            }
+        
+    </script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Macondo&display=swap" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Macondo&display=swap');
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            overflow: hidden; /* Prevent horizontal scroll */
+            flex-direction: column; /* Stack cycle and text vertically */
+        }
+
+        .loader {
+            width: 200px;
+            height: 200px;
+            position: absolute;
+            animation: marquee 5s linear infinite;
+        }
+
+        /* Keyframes for marquee effect */
+        @keyframes marquee {
+            0% {
+                left: -200px; /* Start from left off-screen */
+            }
+            100% {
+                left: 100vw; /* Move to the right border */
+            }
+        }
+
+        /* Make the cycle green */
+        .loader svg {
+            fill: none;
+            stroke: green;
+        }
+
+        /* Style for the cycle elements */
+        .loader circle, .loader line {
+            stroke-width: 5;
+        }
+
+        /* Text below the cycle */
+        .website-name {
+            font-size: 40px;
+            font-weight: bold;
+            color: green;
+            font-family: 'Arial', sans-serif;
+            margin-bottom: 85px;
+        }
+    </style>
+</head>
+<body>
+    <div class="loader">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+            <!-- Wheels -->
+            <circle cx="50" cy="150" r="30" stroke="green" fill="none" />
+            <circle cx="150" cy="150" r="30" stroke="green" fill="none" />
+            
+            <!-- Frame -->
+            <line x1="50" y1="150" x2="90" y2="80" stroke="green" />
+            <line x1="90" y1="80" x2="150" y2="150" stroke="green" />
+            <line x1="50" y1="150" x2="80" y2="150" stroke="green" />
+            <line x1="80" y1="150" x2="90" y2="120" stroke="green" />
+            <line x1="90" y1="120" x2="120" y2="120" stroke="green" />
+            
+            <!-- Pedal -->
+            <line x1="90" y1="120" x2="105" y2="105" stroke="green" />
+            <line x1="105" y1="105" x2="110" y2="120" stroke="green" />
+        </svg>
+    </div>
+    <div class="website-name" style="font-family:'Macondo';">
+        Recycle Network
+    </div>
+
+    <script>
+        // Redirect to homepage after 5 seconds (5000 milliseconds)
+        setTimeout(function() {
+            window.location.href = "homepage.html";
+        }, 5000);
+    </script>
+</body>
+</html>
